@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>祝小羊卓生日快乐！</title>
+    <!-- 引入纸屑特效库 -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 20px 0;
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-color: #f7e8d5; 
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; /* 防止撑出滚动条 */
+            position: relative;
+        }
+
+        /* 音乐控制图标 */
+        #music-toggle {
+            position: fixed; top: 20px; right: 20px;
+            font-size: 30px; cursor: pointer; z-index: 100000;
+            background: rgba(255, 255, 255, 0.7); border-radius: 50%;
+            width: 50px; height: 50px; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            animation: spin 4s linear infinite;
+            animation-play-state: paused;
+        }
+        #music-toggle.playing { animation-play-state: running; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* 背景漂浮物 */
+        .floating-bg {
+            position: absolute; font-size: 30px; opacity: 0.4;
+            animation: float-up 12s linear infinite; z-index: 1;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* 主卡片样式 */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 35px 25px; border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(214, 186, 150, 0.4);
+            text-align: center; max-width: 90%; width: 420px;
+            z-index: 10; position: relative; border: 3px solid #fff;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .card::-webkit-scrollbar { display: none; }
+
+        h1 {
+            color: #e59a7a; font-size: 26px;
+            margin-top: 0; margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(229, 154, 122, 0.2);
+        }
+
+        .photo-wrapper { margin: 0 auto 15px auto; width: 100%; display: flex; justify-content: center; }
+        .birthday-photo {
+            width: 100%; max-width: 260px; border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 6px solid #fff;
+            transition: transform 0.3s ease; object-fit: cover;
+        }
+        .birthday-photo:hover { transform: scale(1.03) rotate(-2deg); }
+
+        .sheep-container { font-size: 35px; margin: 5px 0 15px 0; display: inline-block; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .subtitle { color: #777; font-size: 15px; margin-bottom: 25px; font-weight: bold; }
+
+        button {
+            background: linear-gradient(45deg, #f6d365 0%, #fda085 100%);
+            color: #fff; font-weight: bold; border: none;
+            padding: 14px 30px; font-size: 17px; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(253, 160, 133, 0.4);
+            transition: all 0.3s ease;
+        }
+        button:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 8px 20px rgba(253, 160, 133, 0.6); }
+
+        #message {
+            display: none; margin-top: 20px; background: #fffaf0;
+            padding: 20px; border-radius: 15px; color: #665;
+            line-height: 1.8; text-align: left; animation: fadeIn 1s forwards;
+            border: 2px dashed #fbd38d;
+        }
+        #message p { margin: 8px 0; font-size: 15px; }
+        .highlight { color: #e59a7a; font-weight: bold; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ====== 满屏祝福小弹窗(气泡)样式 ====== */
+        .blessing-bubble {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 18px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 2px solid #fbd38d;
+            color: #e59a7a;
+            font-weight: bold;
+            font-size: var(--fs); /* 随机字体大小 */
+            z-index: 9999;
+            cursor: pointer;
+            user-select: none;
+            
+            /* 关键动画设置：初始不可见，带有缩放和旋转变量 */
+            opacity: 0;
+            transform: scale(0) rotate(var(--rot));
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: box-shadow 0.2s ease, filter 0.2s ease;
+        }
+        .blessing-bubble:hover {
+            box-shadow: 0 10px 30px rgba(229, 154, 122, 0.5);
+            filter: brightness(1.05);
+        }
+        
+        /* 弹出的果冻爆炸动画 */
+        @keyframes popIn {
+            0% { transform: scale(0) rotate(var(--rot)); opacity: 0; }
+            1% { opacity: 1; }
+            60% { transform: scale(calc(var(--scale) + 0.15)) rotate(var(--rot)); opacity: 1; }
+            100% { transform: scale(var(--scale)) rotate(var(--rot)); opacity: 1; }
+        }
+
+        /* 戳破消失动画 */
+        .blessing-bubble.pop-out {
+            animation: popOut 0.3s forwards !important;
+        }
+        @keyframes popOut {
+            to { transform: scale(0) rotate(var(--rot)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景音乐 -->
+    <audio id="bgm" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="music-toggle">🎵</div>
+    <div id="background-elements"></div>
+
+    <div class="card">
+        <h1>🎂 祝小羊卓生日快乐！ 🎈</h1>
+        <div class="photo-wrapper">
+            <img src="photo.png" alt="小羊卓" class="birthday-photo">
+        </div>
+        <div class="sheep-container">🐑</div>
+        <p class="subtitle">愿你像小羊一样，永远可爱被爱包围！</p>
+        <button id="giftBtn">点击开启专属惊喜 🎁</button>
+        
+        <div id="message">
+            <p>亲爱的 <span class="highlight">小羊卓</span>：</p>
+            <p>今天的你比昨天更精彩，</p>
+            <p>愿你未来可期，梦想成真！🌟</p>
+            <p>愿所有美好都能如期而至～</p>
+            <p style="text-align: center; font-size: 17px; margin-top: 15px; font-weight: bold; color:#e59a7a;">
+                ✨ 天天开心，岁岁平安！ ✨
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 1. 生成背景漂浮元素
+        const bgContainer = document.getElementById('background-elements');
+        const elements = ['☁️', '🎈', '🐑', '✨', '🎁', '🎉'];
+        for(let i = 0; i < 15; i++) {
+            let div = document.createElement('div');
+            div.className = 'floating-bg';
+            div.innerText = elements[Math.floor(Math.random() * elements.length)];
+            div.style.left = Math.random() * 100 + 'vw';
+            div.style.animationDuration = (Math.random() * 12 + 10) + 's'; 
+            div.style.animationDelay = (Math.random() * 5) + 's';
+            div.style.fontSize = (Math.random() * 20 + 20) + 'px'; 
+            bgContainer.appendChild(div);
+        }
+
+        // 2. 音乐控制
+        const bgm = document.getElementById('bgm');
+        const musicToggle = document.getElementById('music-toggle');
+        musicToggle.addEventListener('click', () => {
+            if (bgm.paused) { bgm.play(); musicToggle.classList.add('playing'); } 
+            else { bgm.pause(); musicToggle.classList.remove('playing'); }
+        });
+
+        // 3. 超丰富的满屏词库
+        const blessingWords = [
+            "🎈 永远可爱", "🌟 闪闪发光", "💖 平安喜乐", "🌈 万事胜意",
+            "🍀 好运连连", "🌙 岁岁平安", "☀️ 做自己的小太阳", "🎉 无忧无虑", 
+            "🌻 每天开心", "✨ 梦想成真", "👑 前程似锦", "🌸 笑容满面", 
+            "🎁 惊喜不断", "🐑 快乐小羊", "🍰 甜甜蜜蜜", "🎵 自由自在", 
+            "💌 满心欢喜", "✌️ 所愿皆得", "💰 暴富暴美", "🏆 逢考必过",
+            "🚀 鹏程万里", "🍎 平平安安", "💫 耀眼夺目", "🌹 步步生花"
+        ];
+
+        // 4. 按钮交互
+        const btn = document.getElementById('giftBtn');
+        const msg = document.getElementById('message');
+
+        btn.addEventListener('click', () => {
+            bgm.play().catch(e => console.log('请手动点击右上角播放音乐'));
+            musicToggle.classList.add('playing');
+            btn.style.display = 'none';
+            msg.style.display = 'block';
+
+            // ====== 满屏轰炸开始：生成 66 个弹窗气泡 ======
+            const totalBubbles = 66; 
+            
+            for(let i = 0; i < totalBubbles; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'blessing-bubble';
+                bubble.innerText = blessingWords[Math.floor(Math.random() * blessingWords.length)];
+                
+                // 随机分布在屏幕的各个角落 (边界稍微留白防止截断)
+                bubble.style.left = (Math.random() * 88 + 2) + 'vw';
+                bubble.style.top = (Math.random() * 90 + 2) + 'vh';
+                
+                // 随机样式：倾斜角度、大小、字体大小
+                const rot = Math.random() * 40 - 20; // -20度 到 20度
+                const scale = Math.random() * 0.5 + 0.8; // 0.8 到 1.3 倍大小
+                const fontSize = Math.floor(Math.random() * 6 + 14); // 14px 到 20px
+                
+                // 随机延迟：让它们在 0 ~ 2 秒内像放烟花一样陆续蹦出来
+                const delay = Math.random() * 2; 
+
+                bubble.style.setProperty('--rot', rot + 'deg');
+                bubble.style.setProperty('--scale', scale);
+                bubble.style.setProperty('--fs', fontSize + 'px');
+                bubble.style.animationDelay = delay + 's';
+
+                // 戳破互动
+                bubble.addEventListener('click', function() {
+                    this.classList.add('pop-out');
+                    setTimeout(() => this.remove(), 300);
+                });
+
+                document.body.appendChild(bubble);
+            }
+
+            // 纸屑撒花加倍
+            const duration = 4 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+
+                const particleCount = 60 * (timeLeft / duration); // 增加了碎纸屑的密度
+                const warmColors = ['#f6d365', '#fda085', '#fbc2eb', '#a6c1ee', '#ffffff'];
+                
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: warmColors }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: warmColors }));
+            }, 200);
+        });
+    </script>
+</body>
+</html>
