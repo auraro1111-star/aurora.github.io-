@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>像素风机甲对战</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="menu-screen" class="screen active">
+            <div class="title-container">
+                <h1 class="game-title">
+                    <span class="title-line">像素风</span>
+                    <span class="title-line highlight">机甲对战</span>
+                </h1>
+                <div class="title-decoration">
+                    <span class="pixel-star">★</span>
+                    <span class="pixel-star">★</span>
+                    <span class="pixel-star">★</span>
+                </div>
+            </div>
+            
+            <div class="controls-container">
+                <div class="player-controls player1-controls">
+                    <h2 class="player-title">玩家1</h2>
+                    <div class="mech-preview alpha-preview"></div>
+                    <div class="control-list">
+                        <div class="control-item">
+                            <span class="key">A/D</span>
+                            <span class="action">移动</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">W</span>
+                            <span class="action">跳跃</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">F</span>
+                            <span class="action">攻击</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">G</span>
+                            <span class="action">防御</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="vs-divider">
+                    <span>VS</span>
+                </div>
+                
+                <div class="player-controls player2-controls">
+                    <h2 class="player-title">玩家2</h2>
+                    <div class="mech-preview beta-preview"></div>
+                    <div class="control-list">
+                        <div class="control-item">
+                            <span class="key">←/→</span>
+                            <span class="action">移动</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">↑</span>
+                            <span class="action">跳跃</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">K</span>
+                            <span class="action">攻击</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">L</span>
+                            <span class="action">防御</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="start-btn" class="pixel-btn">
+                <span class="btn-text">开始对战</span>
+            </button>
+            
+            <div class="footer-info">
+                <p>本地双人对战 | 按ESC暂停</p>
+            </div>
+        </div>
+        
+        <div id="game-screen" class="screen">
+            <div id="hud">
+                <div class="health-container player1-health">
+                    <div class="player-label">P1</div>
+                    <div class="health-bar-outer">
+                        <div id="health-bar-1" class="health-bar-inner"></div>
+                    </div>
+                    <div id="health-text-1" class="health-text">100</div>
+                </div>
+                
+                <div class="round-info">
+                    <span id="round-time">00:00</span>
+                </div>
+                
+                <div class="health-container player2-health">
+                    <div id="health-text-2" class="health-text">100</div>
+                    <div class="health-bar-outer">
+                        <div id="health-bar-2" class="health-bar-inner"></div>
+                    </div>
+                    <div class="player-label">P2</div>
+                </div>
+            </div>
+            
+            <canvas id="game-canvas"></canvas>
+            
+            <div id="pause-overlay" class="overlay hidden">
+                <div class="overlay-content">
+                    <h2>游戏暂停</h2>
+                    <p>按ESC继续</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="result-screen" class="screen">
+            <div class="result-container">
+                <h1 id="winner-text" class="winner-title">玩家1 获胜!</h1>
+                <div id="winner-mech" class="winner-mech-preview"></div>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">对战时间</span>
+                        <span id="final-time" class="stat-value">00:00</span>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button id="rematch-btn" class="pixel-btn">
+                        <span class="btn-text">再来一局</span>
+                    </button>
+                    <button id="menu-btn" class="pixel-btn secondary">
+                        <span class="btn-text">返回主菜单</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机甲对战 - 管理面板</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-dark: #0a0a1a;
+            --bg-medium: #1a1a2e;
+            --bg-light: #2d2d44;
+            --player1-primary: #ff4757;
+            --player2-primary: #3742fa;
+            --text-light: #ffffff;
+            --text-muted: #8888aa;
+            --gold: #ffd700;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--bg-light);
+        }
+        
+        h1 {
+            font-size: 24px;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        
+        .panel {
+            background: var(--bg-medium);
+            border: 2px solid var(--bg-light);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .panel-title {
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--bg-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .panel-title::before {
+            content: '⚙';
+            font-size: 18px;
+        }
+        
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .config-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .config-item label {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        
+        .config-item input {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            padding: 10px;
+            background: var(--bg-dark);
+            border: 2px solid var(--bg-light);
+            border-radius: 4px;
+            color: var(--text-light);
+        }
+        
+        .config-item input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        
+        .mech-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .mech-panel {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .mech-panel.alpha {
+            border: 2px solid var(--player1-primary);
+        }
+        
+        .mech-panel.beta {
+            border: 2px solid var(--player2-primary);
+        }
+        
+        .mech-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .mech-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+        }
+        
+        .alpha .mech-icon {
+            background: var(--player1-primary);
+        }
+        
+        .beta .mech-icon {
+            background: var(--player2-primary);
+        }
+        
+        .mech-name {
+            font-size: 12px;
+        }
+        
+        .color-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .color-input {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .color-input label {
+            font-size: 8px;
+            color: var(--text-muted);
+        }
+        
+        .color-input input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: 2px solid var(--bg-dark);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            padding: 15px 30px;
+            border: 2px solid var(--text-light);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--player1-primary);
+            color: var(--text-light);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .status-bar {
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 10px;
+        }
+        
+        .status-bar.success {
+            border-left: 4px solid #2ed573;
+        }
+        
+        .status-bar.error {
+            border-left: 4px solid var(--player1-primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 10px;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 16px;
+            }
+            
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mech-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 机甲对战 管理面板</h1>
+            <p class="subtitle">实时调整游戏参数和机甲属性</p>
+        </header>
+        
+        <div class="panel">
+            <h2 class="panel-title">游戏配置</h2>
+            <div class="config-grid" id="game-config">
+                <div class="config-item">
+                    <label>重力加速度</label>
+                    <input type="number" id="gravity" step="0.1" value="0.8">
+                </div>
+                <div class="config-item">
+                    <label>移动速度</label>
+                    <input type="number" id="moveSpeed" step="0.5" value="5">
+                </div>
+                <div class="config-item">
+                    <label>跳跃力度</label>
+                    <input type="number" id="jumpForce" step="1" value="-15">
+                </div>
+                <div class="config-item">
+                    <label>攻击冷却 (毫秒)</label>
+                    <input type="number" id="attackCooldown" step="50" value="500">
+                </div>
+                <div class="config-item">
+                    <label>画布宽度</label>
+                    <input type="number" id="canvasWidth" step="50" value="1200">
+                </div>
+                <div class="config-item">
+                    <label>画布高度</label>
+                    <input type="number" id="canvasHeight" step="50" value="600">
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h2 class="panel-title">机甲属性</h2>
+            <div class="mech-section">
+                <div class="mech-panel alpha">
+                    <div class="mech-header">
+                        <div class="mech-icon"></div>
+                        <span class="mech-name">机甲 Alpha (玩家1)</span>
+                    </div>
+                    <div class="config-grid">
+                        <div class="config-item">
+                            <label>最大血量</label>
+                            <input type="number" id="alpha-maxHealth" value="100">
+                        </div>
+                        <div class="config-item">
+                            <label>攻击伤害</label>
+                            <input type="number" id="alpha-attackDamage" value="15">
+                        </div>
+                        <div class="config-item">
+                            <label>跳跃攻击伤害</label>
+                            <input type="number" id="alpha-jumpAttackDamage" value="20">
+                        </div>
+                        <div class="config-item">
+                            <label>防御减伤比例</label>
+                            <input type="number" id="alpha-defenseReduction" step="0.1" min="0" max="1" value="0.8">
+                        </div>
+                    </div>
+                    <div class="color-inputs" style="margin-top: 15px;">
+                        <div class="color-input">
+                            <label>主色</label>
+                            <input type="color" id="alpha-color-primary" value="#ff4757">
+                        </div>
+                        <div class="color-input">
+                            <label>次色</label>
+                            <input type="color" id="alpha-color-secondary" value="#ff6b81">
+                        </div>
+                        <div class="color-input">
+                            <label>强调色</label>
+                            <input type="color" id="alpha-color-accent" value="#c0392b">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mech-panel beta">
+                    <div class="mech-header">
+                        <div class="mech-icon"></div>
+                        <span class="mech-name">机甲 Beta (玩家2)</span>
+                    </div>
+                    <div class="config-grid">
+                        <div class="config-item">
+                            <label>最大血量</label>
+                            <input type="number" id="beta-maxHealth" value="100">
+                        </div>
+                        <div class="config-item">
+                            <label>攻击伤害</label>
+                            <input type="number" id="beta-attackDamage" value="15">
+                        </div>
+                        <div class="config-item">
+                            <label>跳跃攻击伤害</label>
+                            <input type="number" id="beta-jumpAttackDamage" value="20">
+                        </div>
+                        <div class="config-item">
+                            <label>防御减伤比例</label>
+                            <input type="number" id="beta-defenseReduction" step="0.1" min="0" max="1" value="0.8">
+                        </div>
+                    </div>
+                    <div class="color-inputs" style="margin-top: 15px;">
+                        <div class="color-input">
+                            <label>主色</label>
+                            <input type="color" id="beta-color-primary" value="#3742fa">
+                        </div>
+                        <div class="color-input">
+                            <label>次色</label>
+                            <input type="color" id="beta-color-secondary" value="#5352ed">
+                        </div>
+                        <div class="color-input">
+                            <label>强调色</label>
+                            <input type="color" id="beta-color-accent" value="#1e3799">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="saveConfig()">💾 保存配置</button>
+            <button class="btn btn-secondary" onclick="loadConfig()">🔄 重新加载</button>
+            <button class="btn btn-secondary" onclick="resetConfig()">↩️ 恢复默认</button>
+        </div>
+        
+        <div id="status-bar" class="status-bar hidden"></div>
+        
+        <div class="nav-links">
+            <a href="/index.html">🎮 进入游戏</a>
+            <a href="/admin">⚙️ 管理面板</a>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = window.location.origin;
+        
+        async function loadConfig() {
+            try {
+                const [configRes, mechsRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/config`),
+                    fetch(`${API_BASE}/api/mechs`)
+                ]);
+                
+                const config = await configRes.json();
+                const mechs = await mechsRes.json();
+                
+                document.getElementById('gravity').value = config.gravity;
+                document.getElementById('moveSpeed').value = config.moveSpeed;
+                document.getElementById('jumpForce').value = config.jumpForce;
+                document.getElementById('attackCooldown').value = config.attackCooldown;
+                document.getElementById('canvasWidth').value = config.canvasWidth;
+                document.getElementById('canvasHeight').value = config.canvasHeight;
+                
+                loadMechConfig('alpha', mechs.alpha);
+                loadMechConfig('beta', mechs.beta);
+                
+                showStatus('配置加载成功!', 'success');
+            } catch (error) {
+                showStatus('加载配置失败: ' + error.message, 'error');
+            }
+        }
+        
+        function loadMechConfig(id, mech) {
+            document.getElementById(`${id}-maxHealth`).value = mech.maxHealth;
+            document.getElementById(`${id}-attackDamage`).value = mech.attackDamage;
+            document.getElementById(`${id}-jumpAttackDamage`).value = mech.jumpAttackDamage;
+            document.getElementById(`${id}-defenseReduction`).value = mech.defenseReduction;
+            document.getElementById(`${id}-color-primary`).value = mech.color.primary;
+            document.getElementById(`${id}-color-secondary`).value = mech.color.secondary;
+            document.getElementById(`${id}-color-accent`).value = mech.color.accent;
+        }
+        
+        async function saveConfig() {
+            try {
+                const gameConfig = {
+                    gravity: parseFloat(document.getElementById('gravity').value),
+                    moveSpeed: parseFloat(document.getElementById('moveSpeed').value),
+                    jumpForce: parseInt(document.getElementById('jumpForce').value),
+                    attackCooldown: parseInt(document.getElementById('attackCooldown').value),
+                    canvasWidth: parseInt(document.getElementById('canvasWidth').value),
+                    canvasHeight: parseInt(document.getElementById('canvasHeight').value)
+                };
+                
+                await fetch(`${API_BASE}/api/config`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(gameConfig)
+                });
+                
+                await saveMechConfig('alpha');
+                await saveMechConfig('beta');
+                
+                showStatus('配置保存成功! 刷新游戏页面即可生效。', 'success');
+            } catch (error) {
+                showStatus('保存配置失败: ' + error.message, 'error');
+            }
+        }
+        
+        async function saveMechConfig(id) {
+            const mechConfig = {
+                maxHealth: parseInt(document.getElementById(`${id}-maxHealth`).value),
+                attackDamage: parseInt(document.getElementById(`${id}-attackDamage`).value),
+                jumpAttackDamage: parseInt(document.getElementById(`${id}-jumpAttackDamage`).value),
+                defenseReduction: parseFloat(document.getElementById(`${id}-defenseReduction`).value),
+                color: {
+                    primary: document.getElementById(`${id}-color-primary`).value,
+                    secondary: document.getElementById(`${id}-color-secondary`).value,
+                    accent: document.getElementById(`${id}-color-accent`).value
+                }
+            };
+            
+            await fetch(`${API_BASE}/api/mechs/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(mechConfig)
+            });
+        }
+        
+        function resetConfig() {
+            document.getElementById('gravity').value = 0.8;
+            document.getElementById('moveSpeed').value = 5;
+            document.getElementById('jumpForce').value = -15;
+            document.getElementById('attackCooldown').value = 500;
+            document.getElementById('canvasWidth').value = 1200;
+            document.getElementById('canvasHeight').value = 600;
+            
+            document.getElementById('alpha-maxHealth').value = 100;
+            document.getElementById('alpha-attackDamage').value = 15;
+            document.getElementById('alpha-jumpAttackDamage').value = 20;
+            document.getElementById('alpha-defenseReduction').value = 0.8;
+            document.getElementById('alpha-color-primary').value = '#ff4757';
+            document.getElementById('alpha-color-secondary').value = '#ff6b81';
+            document.getElementById('alpha-color-accent').value = '#c0392b';
+            
+            document.getElementById('beta-maxHealth').value = 100;
+            document.getElementById('beta-attackDamage').value = 15;
+            document.getElementById('beta-jumpAttackDamage').value = 20;
+            document.getElementById('beta-defenseReduction').value = 0.8;
+            document.getElementById('beta-color-primary').value = '#3742fa';
+            document.getElementById('beta-color-secondary').value = '#5352ed';
+            document.getElementById('beta-color-accent').value = '#1e3799';
+            
+            showStatus('已恢复默认配置，点击保存生效。', 'success');
+        }
+        
+        function showStatus(message, type) {
+            const statusBar = document.getElementById('status-bar');
+            statusBar.textContent = message;
+            statusBar.className = `status-bar ${type}`;
+            statusBar.classList.remove('hidden');
+            
+            setTimeout(() => {
+                statusBar.classList.add('hidden');
+            }, 5000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadConfig);
+    </script>
+</body>
+</html>
