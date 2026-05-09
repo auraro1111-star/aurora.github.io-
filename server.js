@@ -10,13 +10,13 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 const gameConfig = {
-    gravity: 0.8,
-    groundY: 500,
+    gravity: 0.6,
+    groundY: 480,
     canvasWidth: 1200,
     canvasHeight: 600,
-    attackCooldown: 500,
-    jumpForce: -15,
-    moveSpeed: 5
+    attackCooldown: 400,
+    jumpForce: -14,
+    moveSpeed: 6
 };
 
 const mechsConfig = {
@@ -24,26 +24,28 @@ const mechsConfig = {
         id: 'alpha',
         name: '机甲Alpha',
         maxHealth: 100,
-        attackDamage: 15,
-        jumpAttackDamage: 20,
-        defenseReduction: 0.8,
+        attackDamage: 12,
+        jumpAttackDamage: 18,
+        defenseReduction: 0.75,
         color: {
             primary: '#ff4757',
             secondary: '#ff6b81',
-            accent: '#c0392b'
+            accent: '#c0392b',
+            dark: '#8b0000'
         }
     },
     beta: {
         id: 'beta',
         name: '机甲Beta',
         maxHealth: 100,
-        attackDamage: 15,
-        jumpAttackDamage: 20,
-        defenseReduction: 0.8,
+        attackDamage: 12,
+        jumpAttackDamage: 18,
+        defenseReduction: 0.75,
         color: {
             primary: '#3742fa',
             secondary: '#5352ed',
-            accent: '#1e3799'
+            accent: '#1e3799',
+            dark: '#00008b'
         }
     }
 };

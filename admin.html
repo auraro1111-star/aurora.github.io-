@@ -281,19 +281,19 @@
             <div class="config-grid" id="game-config">
                 <div class="config-item">
                     <label>重力加速度</label>
-                    <input type="number" id="gravity" step="0.1" value="0.8">
+                    <input type="number" id="gravity" step="0.1" value="0.6">
                 </div>
                 <div class="config-item">
                     <label>移动速度</label>
-                    <input type="number" id="moveSpeed" step="0.5" value="5">
+                    <input type="number" id="moveSpeed" step="0.5" value="6">
                 </div>
                 <div class="config-item">
                     <label>跳跃力度</label>
-                    <input type="number" id="jumpForce" step="1" value="-15">
+                    <input type="number" id="jumpForce" step="1" value="-14">
                 </div>
                 <div class="config-item">
                     <label>攻击冷却 (毫秒)</label>
-                    <input type="number" id="attackCooldown" step="50" value="500">
+                    <input type="number" id="attackCooldown" step="50" value="400">
                 </div>
                 <div class="config-item">
                     <label>画布宽度</label>
@@ -321,15 +321,15 @@
                         </div>
                         <div class="config-item">
                             <label>攻击伤害</label>
-                            <input type="number" id="alpha-attackDamage" value="15">
+                            <input type="number" id="alpha-attackDamage" value="12">
                         </div>
                         <div class="config-item">
                             <label>跳跃攻击伤害</label>
-                            <input type="number" id="alpha-jumpAttackDamage" value="20">
+                            <input type="number" id="alpha-jumpAttackDamage" value="18">
                         </div>
                         <div class="config-item">
                             <label>防御减伤比例</label>
-                            <input type="number" id="alpha-defenseReduction" step="0.1" min="0" max="1" value="0.8">
+                            <input type="number" id="alpha-defenseReduction" step="0.05" min="0" max="1" value="0.75">
                         </div>
                     </div>
                     <div class="color-inputs" style="margin-top: 15px;">
@@ -360,15 +360,15 @@
                         </div>
                         <div class="config-item">
                             <label>攻击伤害</label>
-                            <input type="number" id="beta-attackDamage" value="15">
+                            <input type="number" id="beta-attackDamage" value="12">
                         </div>
                         <div class="config-item">
                             <label>跳跃攻击伤害</label>
-                            <input type="number" id="beta-jumpAttackDamage" value="20">
+                            <input type="number" id="beta-jumpAttackDamage" value="18">
                         </div>
                         <div class="config-item">
                             <label>防御减伤比例</label>
-                            <input type="number" id="beta-defenseReduction" step="0.1" min="0" max="1" value="0.8">
+                            <input type="number" id="beta-defenseReduction" step="0.05" min="0" max="1" value="0.75">
                         </div>
                     </div>
                     <div class="color-inputs" style="margin-top: 15px;">
@@ -489,25 +489,25 @@
         }
         
         function resetConfig() {
-            document.getElementById('gravity').value = 0.8;
-            document.getElementById('moveSpeed').value = 5;
-            document.getElementById('jumpForce').value = -15;
-            document.getElementById('attackCooldown').value = 500;
+            document.getElementById('gravity').value = 0.6;
+            document.getElementById('moveSpeed').value = 6;
+            document.getElementById('jumpForce').value = -14;
+            document.getElementById('attackCooldown').value = 400;
             document.getElementById('canvasWidth').value = 1200;
             document.getElementById('canvasHeight').value = 600;
             
             document.getElementById('alpha-maxHealth').value = 100;
-            document.getElementById('alpha-attackDamage').value = 15;
-            document.getElementById('alpha-jumpAttackDamage').value = 20;
-            document.getElementById('alpha-defenseReduction').value = 0.8;
+            document.getElementById('alpha-attackDamage').value = 12;
+            document.getElementById('alpha-jumpAttackDamage').value = 18;
+            document.getElementById('alpha-defenseReduction').value = 0.75;
             document.getElementById('alpha-color-primary').value = '#ff4757';
             document.getElementById('alpha-color-secondary').value = '#ff6b81';
             document.getElementById('alpha-color-accent').value = '#c0392b';
             
             document.getElementById('beta-maxHealth').value = 100;
-            document.getElementById('beta-attackDamage').value = 15;
-            document.getElementById('beta-jumpAttackDamage').value = 20;
-            document.getElementById('beta-defenseReduction').value = 0.8;
+            document.getElementById('beta-attackDamage').value = 12;
+            document.getElementById('beta-jumpAttackDamage').value = 18;
+            document.getElementById('beta-defenseReduction').value = 0.75;
             document.getElementById('beta-color-primary').value = '#3742fa';
             document.getElementById('beta-color-secondary').value = '#5352ed';
             document.getElementById('beta-color-accent').value = '#1e3799';
